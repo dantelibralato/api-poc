@@ -25,8 +25,10 @@ $app = new Laravel\Lumen\Application(
 
 $app->withFacades();
 $app->withEloquent();
+$app->register(SwooleTW\Http\LumenServiceProvider::class);
 $app->configure('database');
 $app->configure('general');
+$app->configure('swoole_http');
 
 /*
   |--------------------------------------------------------------------------

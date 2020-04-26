@@ -96,11 +96,11 @@ class ProductoRepo extends BaseRepo {
                     if ($iso_moneda === $dato->iso_moneda) {
                         $_monto = floatval($dato->monto);
                     } else {
-                        $tipo_cambio = floatval(Arr::get($fechas, $dato->fecha));
+                        $tipo_cambio = floatval(Arr::get($fechas, $dato->fecha, self::TIPO_CAMBIO_DEFAULT));
                         if ($iso_moneda === self::TIPO_MONEDA_PEN) {
                             $_monto = floatval($dato->monto) * $tipo_cambio;
                         } elseif ($iso_moneda === self::TIPO_MONEDA_USD) {
-                            $_monto = round(floatval($dato->monto) / $tipo_cambio, 2);
+                            $_monto = floatval($dato->monto) / $tipo_cambio;
                         }
                     }
 
@@ -119,7 +119,7 @@ class ProductoRepo extends BaseRepo {
 
         $data = collect($this->groupByPartAndType($ventas))
                 ->map(function($item) {
-            $item['monto_total'] = round($item['monto_total'], 2);
+            $item['monto_total'] = $item['monto_total'];
             return $item;
         })
         ;
@@ -216,9 +216,11 @@ class ProductoRepo extends BaseRepo {
             'concurrency' => 10,
             'fulfilled' => function (Response $response) use(&$tipocambio) {
                 if ($response->getStatusCode() == 200) {
-                    $dato = json_decode($response->getBody(), true);
+                    $respuesta = json_decode($response->getBody(), true);
+                    $key = array_key_first($respuesta);
                     // processing response of user here
-                    $tipocambio[] = $dato;
+                    $dato = trim(Arr::get($respuesta, $key, ''));
+                    $tipocambio[$key] = (!empty($dato) ? $dato : self::TIPO_CAMBIO_DEFAULT);
                 }
             },
             'rejected' => function ($reason) {

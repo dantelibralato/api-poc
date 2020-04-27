@@ -2,7 +2,14 @@
 Homestead.json
 Homestead.yaml
 .phpunit.result.cache
+/nbproject
+/nbproject/private/
+/nbproject/Makefile-*.mk
+/nbproject/Package-*.bash
 ./nbproject
+./nbproject/private/
+./nbproject/Makefile-*.mk
+./nbproject/Package-*.bash
 **/nbproject/private/
 **/nbproject/Makefile-*.mk
 **/nbproject/Package-*.bash
